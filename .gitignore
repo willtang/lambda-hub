@@ -90,4 +90,6 @@ ENV/
 
 
 
-sound_files/test.wv
+# DSD files that are too large
+sound_files/dsd.dsf
+sound_files/dsd.wv

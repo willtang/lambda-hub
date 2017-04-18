@@ -10,7 +10,15 @@ handle = None
 
 def init():
     BASS_Init(-1, 44100, 0, 0, 0)
-    BASS_PluginLoad("basswv.dll", 0);
+    if platform.system() == 'Windows':
+        plugin = BASS_PluginLoad("basswv.dll", 0);
+        print('Plugin: %s' % plugin)
+    else:
+        plugin = BASS_PluginLoad("libbassflac.dylib", 0)
+        print('Plugin: %s' % plugin)
+        plugin = BASS_PluginLoad(b"./libbasswv.so", 0)
+        print('Plugin: %s' % plugin)
+
     print("BASS initialized...")
 
 def cleanup():
@@ -74,7 +82,8 @@ def play(soundfile):
         abort(404, 'File not found: %s' % soundfile)
 
     print('Opening sound file: %s' % soundfile)
-    handle = BASS_StreamCreateFile(False, soundfile, 0, 0, BASS_UNICODE)
+    soundfile = soundfile.encode('ascii','ignore')
+    handle = BASS_StreamCreateFile(False, soundfile, 0, 0, 0)
     # play_handle(handle, show_tags=False)
 
     # channel_info = BASS_CHANNELINFO()
@@ -130,6 +139,6 @@ def get_status():
 if __name__ == "__main__":
     init()
     atexit.register(cleanup)
-    app.debug = True
+    # app.debug = True
     app.run()
     #app.run(threaded=True)
