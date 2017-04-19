@@ -16,6 +16,8 @@ elif platform.system().lower() == 'darwin':
     if not BASS_PluginLoad(path.abspath('./libbassdsd.dylib'), 0):
         print('DSD Plugin Error: %s' % get_error_description(BASS_ErrorGetCode()))
 else:
+    if not BASS_PluginLoad(path.abspath('./libbassflac.so'), 0):
+        print('FLAC Plugin Error: %s' % get_error_description(BASS_ErrorGetCode()))
     if not BASS_PluginLoad(path.abspath('./libbasswv.so'), 0):
         print('WV Plugin Error: %s' % get_error_description(BASS_ErrorGetCode()))
 
