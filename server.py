@@ -11,13 +11,26 @@ handle = None
 def init():
     BASS_Init(-1, 44100, 0, 0, 0)
     if platform.system() == 'Windows':
-        plugin = BASS_PluginLoad("basswv.dll", 0);
-        print('Plugin: %s' % plugin)
+        if not BASS_PluginLoad(path.abspath('./bassflac.dll'), 0):
+            print('FLAC Plugin Error: %s' % get_error_description(BASS_ErrorGetCode()))
+        if not BASS_PluginLoad(path.abspath('./basswv.dll'), 0):
+            print('WV Plugin Error: %s' % get_error_description(BASS_ErrorGetCode()))
+        if not BASS_PluginLoad(path.abspath('./bassdsd.dll'), 0):
+            print('DSD Plugin Error: %s' % get_error_description(BASS_ErrorGetCode()))
+    elif platform.system().lower() == 'darwin':
+        if not BASS_PluginLoad(path.abspath('./libbassflac.dylib'), 0):
+            print('FLAC Plugin Error: %s' % get_error_description(BASS_ErrorGetCode()))
+        if not BASS_PluginLoad(path.abspath('./libbasswv.dylib'), 0):
+            print('WV Plugin Error: %s' % get_error_description(BASS_ErrorGetCode()))
+        if not BASS_PluginLoad(path.abspath('./libbassdsd.dylib'), 0):
+            print('DSD Plugin Error: %s' % get_error_description(BASS_ErrorGetCode()))
     else:
-        plugin = BASS_PluginLoad("libbassflac.dylib", 0)
-        print('Plugin: %s' % plugin)
-        plugin = BASS_PluginLoad(b"./libbasswv.so", 0)
-        print('Plugin: %s' % plugin)
+        if not BASS_PluginLoad(path.abspath('./libbassflac.so'), 0):
+            print('FLAC Plugin Error: %s' % get_error_description(BASS_ErrorGetCode()))
+        if not BASS_PluginLoad(path.abspath('./libbasswv.so'), 0):
+            print('WV Plugin Error: %s' % get_error_description(BASS_ErrorGetCode()))
+        if not BASS_PluginLoad(path.abspath('./libbassdsd.so'), 0):
+            print('DSD Plugin Error: %s' % get_error_description(BASS_ErrorGetCode()))
 
     print("BASS initialized...")
 
@@ -140,5 +153,5 @@ if __name__ == "__main__":
     init()
     atexit.register(cleanup)
     # app.debug = True
-    app.run()
+    app.run(host='0.0.0.0')
     #app.run(threaded=True)
